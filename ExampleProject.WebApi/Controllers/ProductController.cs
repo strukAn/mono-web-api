@@ -30,7 +30,7 @@ namespace ExampleProject.WebApi.Controllers
                 filtered = filtered.Where(el => el.Stock == stock);
             }
 
-            return Ok(filtered);
+            return Ok(filtered.ToList());
         }
 
         [HttpGet("{id}")]
