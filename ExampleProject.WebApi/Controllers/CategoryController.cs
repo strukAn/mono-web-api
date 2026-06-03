@@ -4,7 +4,7 @@ namespace ExampleProject.WebApi.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class CategoriesController
+    public class CategoriesController : ControllerBase
     {
         [HttpGet("all")]
         public IEnumerable<Category> GetAll()
