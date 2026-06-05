@@ -7,47 +7,52 @@ namespace ExampleProject.WebApi.Controllers
     public class CategoriesController : ControllerBase
     {
         [HttpGet("all")]
-        public IEnumerable<Category> GetAll()
+        public IActionResult GetAll()
         {
-            return Database.Categories.ToArray();
+            if (Database.Categories.Count == 0)
+            {
+                return NotFound("There are no categories");
+            }
+
+            return Ok(Database.Categories);
         }
 
         [HttpGet("{id}")]
-        public Category Get(int id)
+        public IActionResult Get(int id)
         {
-            return Database.Categories.Find(category => category.Id == id);
+            return Ok(Database.Categories.Find(category => category.Id == id));
         }
 
         [HttpDelete("delete")]
-        public string Delete(int id)
+        public IActionResult Delete(int id)
         {
             Category category = Database.Categories.Find(category => category.Id == id);
 
             if (category == null)
             {
-                return $"Category with id={id} not found";
+                return NotFound($"Category with id={id} not found");
             }
 
             Database.Categories.Remove(category);
-            return "Category deleted";
+            return Ok("Category deleted");
         }
 
         [HttpPost("add")]
-        public string Post(Category category)
+        public IActionResult Post(Category category)
         {
             Database.Categories.Add(category);
 
-            return "Category added";
+            return Created("","Category added");
         }
 
         [HttpPut("update")]
-        public string Put(int id, Category updated)
+        public IActionResult Put(int id, Category updated)
         {
             Category category = Database.Categories.Find(category => category.Id == id);
 
             if (category == null)
             {
-                return $"Category with id={id} not found";
+                return NotFound($"Category with id={id} not found");
             }
 
             if (updated.Name != null && category.Name != updated.Name)
@@ -55,7 +60,7 @@ namespace ExampleProject.WebApi.Controllers
                 category.Name = updated.Name;
             }
 
-            return "Category updated";
+            return Ok("Category updated");
         }
     }
 }

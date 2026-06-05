@@ -7,9 +7,9 @@ namespace ExampleProject.WebApi
         private const string CONNECTION_STRING = "Host=localhost:5432;" +
             "Username=postgres;" +
             "Password=admin;" +
-            "Database=postgres";
+            "Database=db2";
 
-        private NpgsqlConnection connection;
+        public NpgsqlConnection connection;
 
         public ClothingStoreRepository()
         {
