@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using ExampleProject.Common;
+using ExampleProject.Model;
+using ExampleProject.Service;
+using Microsoft.AspNetCore.Mvc;
 
 namespace ExampleProject.WebApi.Controllers
 {
@@ -7,60 +10,86 @@ namespace ExampleProject.WebApi.Controllers
     public class CategoriesController : ControllerBase
     {
         [HttpGet("all")]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAllAsync([FromQuery] string name = "")
         {
-            if (Database.Categories.Count == 0)
+            CategoryService service = new CategoryService();
+            CategoryFilter filter = new CategoryFilter();
+
+            filter.Name = name;
+
+            List<Category> categories = await service.GetAllAsync(filter);
+
+            if (categories == null)
             {
-                return NotFound("There are no categories");
+                return NotFound("No categories found");
             }
 
-            return Ok(Database.Categories);
+            return Ok(categories);
         }
 
         [HttpGet("{id}")]
-        public IActionResult Get(int id)
+        public async Task<IActionResult> GetAsync(int id)
         {
-            return Ok(Database.Categories.Find(category => category.Id == id));
+            CategoryService service = new CategoryService();
+            Category product = await service.GetAsync(id);
+
+            if (product == null)
+            {
+                return NotFound("Category not found");
+            }
+
+            return Ok(product);
         }
 
         [HttpDelete("delete")]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> DeleteAsync(int id)
         {
-            Category category = Database.Categories.Find(category => category.Id == id);
+            CategoryService service = new CategoryService();
+            int result = await service.DeleteAsync(id);
 
-            if (category == null)
+            switch (result)
             {
-                return NotFound($"Category with id={id} not found");
+                case 0:
+                    return NotFound("Category not found");
+                case -1:
+                    return BadRequest("Exception thrown in repository");
+                default:
+                    return Ok("Category deleted");
             }
-
-            Database.Categories.Remove(category);
-            return Ok("Category deleted");
         }
 
         [HttpPost("add")]
-        public IActionResult Post(Category category)
+        public async Task<IActionResult> PostAsync(Category category)
         {
-            Database.Categories.Add(category);
+            CategoryService service = new CategoryService();
+            int result = await service.AddAsync(category);
 
-            return Created("","Category added");
+            switch (result)
+            {
+                case 0:
+                    return BadRequest("Product not added");
+                case -1:
+                    return BadRequest("Exception thrown in repository");
+                default:
+                    return Ok("Category added");
+            }
         }
 
         [HttpPut("update")]
-        public IActionResult Put(int id, Category updated)
+        public async Task<IActionResult> PutAsync(int id, Category updated)
         {
-            Category category = Database.Categories.Find(category => category.Id == id);
+            CategoryService service = new CategoryService();
+            int result = await service.UpdateAsync(id, updated);
 
-            if (category == null)
+            switch (result)
             {
-                return NotFound($"Category with id={id} not found");
+                case 0:
+                    return NotFound("Category not found");
+                case -1:
+                    return BadRequest("Exception thrown in repository");
+                default:
+                    return Ok("Category updated");
             }
-
-            if (updated.Name != null && category.Name != updated.Name)
-            {
-                category.Name = updated.Name;
-            }
-
-            return Ok("Category updated");
         }
     }
 }

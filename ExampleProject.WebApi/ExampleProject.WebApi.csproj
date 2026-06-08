@@ -15,4 +15,10 @@
     <Folder Include="SQL Scripts\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\ExampleProject.Model\ExampleProject.Model.csproj" />
+    <ProjectReference Include="..\ExampleProject.Repository\ExampleProject.Repository.csproj" />
+    <ProjectReference Include="..\ExampleProject.Service\ExampleProject.Service.csproj" />
+  </ItemGroup>
+
 </Project>

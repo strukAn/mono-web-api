@@ -1,6 +1,4 @@
-﻿using ExampleProject.WebApi.Controllers;
-
-namespace ExampleProject.WebApi
+﻿namespace ExampleProject.Model
 {
     public class Product
     {
@@ -22,7 +20,6 @@ namespace ExampleProject.WebApi
 
         public Product(string name, string description, int stock, Category category)
         {
-            this.Id = Database.Products.Last().Id + 1;
             this.Name = name;
             this.Description = description;
             this.Stock = stock;
@@ -30,14 +27,12 @@ namespace ExampleProject.WebApi
         }
         public Product(string name, string description, Category category)
         {
-            this.Id = Database.Products.Last().Id + 1;
             this.Name = name;
             this.Description = description;
             this.Category = category;
         }
         public Product(string name, Category category)
         {
-            this.Id = Database.Products.Last().Id + 1;
             this.Name = name;
             this.Category = category;
         }
