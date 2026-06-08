@@ -20,7 +20,7 @@ namespace ExampleProject.Repository
             this.Connection = new NpgsqlConnection(CONNECTION_STRING);
         }
 
-        public List<Product> GetAll(ProductFilter filter)
+        public async Task<List<Product>> GetAllAsync(ProductFilter filter)
         {
             string command = "select p.*, c.\"Name\" as \"CategoryName\" from \"Product\" as p left join \"Category\" as c on (p.\"CategoryId\" = c.\"Id\") where (1=1";
             List<Product> products = new List<Product>();
@@ -51,7 +51,7 @@ namespace ExampleProject.Repository
                 Connection.Open();
             try
             {
-                using NpgsqlDataReader reader = cmd.ExecuteReader();
+                using NpgsqlDataReader reader = await cmd.ExecuteReaderAsync();
 
                 if (reader.HasRows)
                 {
@@ -79,7 +79,7 @@ namespace ExampleProject.Repository
             return products;
         }
 
-        public Product Get(int id)
+        public async Task<Product> GetAsync(int id)
         {
             string command = "select p.*, c.\"Name\" as \"CategoryName\" from \"Product\" as p left join \"Category\" as c on (p.\"CategoryId\" = c.\"Id\") where (p.\"Id\" = @Id)";
             Product product = new Product();
@@ -90,7 +90,7 @@ namespace ExampleProject.Repository
             try
             {
                 Connection.Open();
-                using NpgsqlDataReader reader = cmd.ExecuteReader();
+                using NpgsqlDataReader reader = await cmd.ExecuteReaderAsync();
 
                 if (reader.HasRows)
                 {
@@ -119,7 +119,7 @@ namespace ExampleProject.Repository
             return product;
         }
 
-        public int Delete(int id)
+        public async Task<int> DeleteAsync(int id)
         {
             int result;
             string command = "delete from \"Product\" where (\"Id\" = @Id)";
@@ -130,7 +130,7 @@ namespace ExampleProject.Repository
             try
             {
                 Connection.Open();
-                result = cmd.ExecuteNonQuery();
+                result = await cmd.ExecuteNonQueryAsync();
             }
             catch (Exception ex)
             {
@@ -144,7 +144,7 @@ namespace ExampleProject.Repository
             return result;
         }
 
-        public int Add(Product product)
+        public async Task<int> AddAsync(Product product)
         {
             int result = 0;
             string command = "insert into \"Product\" (\"Id\", \"Name\", \"Description\", \"Stock\", \"CategoryId\") values(DEFAULT, @Name, @Description, @Stock, @CategoryId)";
@@ -164,7 +164,7 @@ namespace ExampleProject.Repository
             try
             {
                 Connection.Open();
-                result = cmd.ExecuteNonQuery();
+                result = await cmd.ExecuteNonQueryAsync();
             }
             catch (Exception ex)
             {
@@ -177,7 +177,7 @@ namespace ExampleProject.Repository
 
             return result;
         }
-        public int Update(int id, Product product)
+        public async Task<int> UpdateAsync(int id, Product product)
         {
             int result = 0;
             string command = "update \"Product\" set \"Name\" = @Name, \"Description\" = @Description, \"Stock\" = @Stock, \"CategoryId\" = @CategoryId where (\"Id\" = @Id)";
@@ -197,7 +197,7 @@ namespace ExampleProject.Repository
             try
             {
                 Connection.Open();
-                result = cmd.ExecuteNonQuery();
+                result = await cmd.ExecuteNonQueryAsync();
             }
             catch (Exception ex)
             {

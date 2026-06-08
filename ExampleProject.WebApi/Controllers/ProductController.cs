@@ -11,7 +11,7 @@ namespace ExampleProject.WebApi.Controllers
     public class ProductsController : ControllerBase
     {
         [HttpGet("all")]
-        public IActionResult GetAll([FromQuery] int stock = -1, [FromQuery] string name = "", [FromQuery] string description = "")
+        public async Task<IActionResult> GetAllAsync([FromQuery] int stock = -1, [FromQuery] string name = "", [FromQuery] string description = "")
         {
             ProductService service = new ProductService();
             ProductFilter filter = new ProductFilter();
@@ -20,7 +20,7 @@ namespace ExampleProject.WebApi.Controllers
             filter.Stock = stock;
             filter.Description = description;
 
-            List<Product> products = service.GetAll(filter);
+            List<Product> products = await service.GetAllAsync(filter);
 
             if(products == null)
             {
@@ -31,10 +31,10 @@ namespace ExampleProject.WebApi.Controllers
         }
 
         [HttpGet("{id}")]
-        public IActionResult Get(int id)
+        public async Task<IActionResult> Get(int id)
         {
             ProductService service = new ProductService();
-            Product product = service.Get(id);
+            Product product = await service.GetAsync(id);
 
             if(product == null)
             {
@@ -45,10 +45,10 @@ namespace ExampleProject.WebApi.Controllers
         }
 
         [HttpDelete("delete")]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
             ProductService service = new ProductService();
-            int result = service.Delete(id);
+            int result = await service.DeleteAsync(id);
 
             switch (result) {
                 case 0:
@@ -62,10 +62,10 @@ namespace ExampleProject.WebApi.Controllers
         }
 
         [HttpPost("add")]
-        public IActionResult Post(ProductCategoryDTO productDto)
+        public async Task<IActionResult> Post(ProductCategoryDTO productDto)
         {
             ProductService service = new ProductService();
-            int result = service.Add(productDto);
+            int result = await service.AddAsync(productDto);
 
             switch (result)
             {
@@ -79,10 +79,10 @@ namespace ExampleProject.WebApi.Controllers
         }
 
         [HttpPut("update")]
-        public IActionResult Put(int id, ProductCategoryDTO updated)
+        public async Task<IActionResult> Put(int id, ProductCategoryDTO updated)
         {
             ProductService service = new ProductService();
-            int result = service.Update(id, updated);
+            int result = await service.UpdateAsync(id, updated);
 
             switch (result)
             {

@@ -7,32 +7,32 @@ namespace ExampleProject.Service
 {
     public class ProductService
     {
-        public List<Product> GetAll(ProductFilter filter )
+        public async Task<List<Product>> GetAllAsync(ProductFilter filter )
         {
             ProductRepository repository = new ProductRepository();
-            return repository.GetAll(filter);
+            return await repository.GetAllAsync(filter);
         }
-        public Product Get(int id)
+        public async Task<Product> GetAsync(int id)
         {
             ProductRepository repository = new ProductRepository();
-            return repository.Get(id);
+            return await repository.GetAsync(id);
         }
-        public int Add(ProductCategoryDTO dto)
+        public async Task<int> AddAsync(ProductCategoryDTO dto)
         {
             ProductRepository repository = new ProductRepository();
             Product product = dto.ToProduct();
-            return repository.Add(product);
+            return await repository.AddAsync(product);
         }
-        public int Delete(int id)
+         public async Task<int> DeleteAsync(int id)
         {
             ProductRepository repository = new ProductRepository();
-            return repository.Delete(id);
+            return await repository.DeleteAsync(id);
         }
-        public int Update(int id, ProductCategoryDTO dto)
+         public async Task<int> UpdateAsync(int id, ProductCategoryDTO dto)
         {
             ProductRepository repository = new ProductRepository();
             Product product = dto.ToProduct();
-            return repository.Update(id, product);
+            return await repository.UpdateAsync(id, product);
         }
     }
 }
