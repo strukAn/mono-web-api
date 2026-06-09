@@ -13,18 +13,12 @@ namespace ExampleProject.Repository
             "Password=admin;" +
             "Database=db2";
 
-        private NpgsqlConnection Connection;
-
-        public ProductRepository()
-        {
-            this.Connection = new NpgsqlConnection(CONNECTION_STRING);
-        }
-
         public async Task<List<Product>> GetAllAsync(ProductFilter filter)
         {
             string command = "select p.*, c.\"Name\" as \"CategoryName\" from \"Product\" as p left join \"Category\" as c on (p.\"CategoryId\" = c.\"Id\") where (1=1";
+            NpgsqlConnection connection = new NpgsqlConnection(CONNECTION_STRING);
             List<Product> products = new List<Product>();
-            NpgsqlCommand cmd = new NpgsqlCommand(command, Connection);
+            NpgsqlCommand cmd = new NpgsqlCommand(command, connection);
             StringBuilder builder = new StringBuilder();
             builder.Append(command);
 
@@ -48,7 +42,7 @@ namespace ExampleProject.Repository
 
             cmd.CommandText = builder.ToString();
 
-                Connection.Open();
+                connection.Open();
             try
             {
                 using NpgsqlDataReader reader = await cmd.ExecuteReaderAsync();
@@ -73,23 +67,24 @@ namespace ExampleProject.Repository
             }
             finally
             {
-                Connection.Close();
+                connection.Close();
             }
 
             return products;
         }
-
+        
         public async Task<Product> GetAsync(int id)
         {
             string command = "select p.*, c.\"Name\" as \"CategoryName\" from \"Product\" as p left join \"Category\" as c on (p.\"CategoryId\" = c.\"Id\") where (p.\"Id\" = @Id)";
+            NpgsqlConnection connection = new NpgsqlConnection(CONNECTION_STRING);
             Product product = new Product();
-            NpgsqlCommand cmd = new NpgsqlCommand(command, Connection);
+            NpgsqlCommand cmd = new NpgsqlCommand(command, connection);
 
             cmd.Parameters.AddWithValue("@Id", id);
 
             try
             {
-                Connection.Open();
+                connection.Open();
                 using NpgsqlDataReader reader = await cmd.ExecuteReaderAsync();
 
                 if (reader.HasRows)
@@ -113,7 +108,7 @@ namespace ExampleProject.Repository
             }
             finally
             {
-                Connection.Close();
+                connection.Close();
             }
 
             return product;
@@ -123,13 +118,14 @@ namespace ExampleProject.Repository
         {
             int result;
             string command = "delete from \"Product\" where (\"Id\" = @Id)";
-            NpgsqlCommand cmd = new NpgsqlCommand(command, Connection);
+            NpgsqlConnection connection = new NpgsqlConnection(CONNECTION_STRING);
+            NpgsqlCommand cmd = new NpgsqlCommand(command, connection);
 
             cmd.Parameters.AddWithValue("Id", id);
 
             try
             {
-                Connection.Open();
+                connection.Open();
                 result = await cmd.ExecuteNonQueryAsync();
             }
             catch (Exception ex)
@@ -138,7 +134,7 @@ namespace ExampleProject.Repository
             }
             finally
             {
-                Connection.Close();
+                connection.Close();
             }
 
             return result;
@@ -148,14 +144,14 @@ namespace ExampleProject.Repository
         {
             int result = 0;
             string command = "insert into \"Product\" (\"Id\", \"Name\", \"Description\", \"Stock\", \"CategoryId\") values(DEFAULT, @Name, @Description, @Stock, @CategoryId)";
-            NpgsqlCommand cmd = new NpgsqlCommand(command, Connection);
+            NpgsqlConnection connection = new NpgsqlConnection(CONNECTION_STRING);
+            NpgsqlCommand cmd = new NpgsqlCommand(command, connection);
 
             if(product == null || product.Category == null)
             {
                 return -1;
             }
 
-            cmd.Parameters.AddWithValue("@Id", product.Id);
             cmd.Parameters.AddWithValue("@Name", product.Name);
             cmd.Parameters.AddWithValue("@Description", product.Description);
             cmd.Parameters.AddWithValue("@Stock", product.Stock);
@@ -163,7 +159,7 @@ namespace ExampleProject.Repository
 
             try
             {
-                Connection.Open();
+                connection.Open();
                 result = await cmd.ExecuteNonQueryAsync();
             }
             catch (Exception ex)
@@ -172,7 +168,7 @@ namespace ExampleProject.Repository
             }
             finally
             {
-                Connection.Close();
+                connection.Close();
             }
 
             return result;
@@ -181,7 +177,8 @@ namespace ExampleProject.Repository
         {
             int result = 0;
             string command = "update \"Product\" set \"Name\" = @Name, \"Description\" = @Description, \"Stock\" = @Stock, \"CategoryId\" = @CategoryId where (\"Id\" = @Id)";
-            NpgsqlCommand cmd = new NpgsqlCommand(command, Connection);
+            NpgsqlConnection connection = new NpgsqlConnection(CONNECTION_STRING);
+            NpgsqlCommand cmd = new NpgsqlCommand(command, connection);
 
             if (product == null || product.Category == null)
             {
@@ -196,7 +193,7 @@ namespace ExampleProject.Repository
 
             try
             {
-                Connection.Open();
+                connection.Open();
                 result = await cmd.ExecuteNonQueryAsync();
             }
             catch (Exception ex)
@@ -205,7 +202,7 @@ namespace ExampleProject.Repository
             }
             finally
             {
-                Connection.Close();
+                connection.Close();
             }
 
             return result;

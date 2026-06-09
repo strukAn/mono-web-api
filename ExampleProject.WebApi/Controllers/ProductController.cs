@@ -1,7 +1,6 @@
-﻿using System.Reflection.Metadata.Ecma335;
-using ExampleProject.Common;
+﻿using ExampleProject.Common;
 using ExampleProject.Model;
-using ExampleProject.Service;
+using ExampleProjest.Service.Common;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ExampleProject.WebApi.Controllers
@@ -10,17 +9,23 @@ namespace ExampleProject.WebApi.Controllers
     [Route("[controller]")]
     public class ProductsController : ControllerBase
     {
+        protected IProductService ProductService { get; }
+
+        public ProductsController(IProductService productService)
+        {
+            this.ProductService = productService;
+        }
+
         [HttpGet("all")]
         public async Task<IActionResult> GetAllAsync([FromQuery] int stock = -1, [FromQuery] string name = "", [FromQuery] string description = "")
         {
-            ProductService service = new ProductService();
             ProductFilter filter = new ProductFilter();
 
             filter.Name = name;
             filter.Stock = stock;
             filter.Description = description;
 
-            List<Product> products = await service.GetAllAsync(filter);
+            List<Product> products = await ProductService.GetAllAsync(filter);
 
             if(products == null)
             {
@@ -33,8 +38,7 @@ namespace ExampleProject.WebApi.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            ProductService service = new ProductService();
-            Product product = await service.GetAsync(id);
+            Product product = await ProductService.GetAsync(id);
 
             if(product == null)
             {
@@ -47,8 +51,7 @@ namespace ExampleProject.WebApi.Controllers
         [HttpDelete("delete")]
         public async Task<IActionResult> Delete(int id)
         {
-            ProductService service = new ProductService();
-            int result = await service.DeleteAsync(id);
+            int result = await ProductService.DeleteAsync(id);
 
             switch (result) {
                 case 0:
@@ -64,8 +67,7 @@ namespace ExampleProject.WebApi.Controllers
         [HttpPost("add")]
         public async Task<IActionResult> Post(ProductCategoryDTO productDto)
         {
-            ProductService service = new ProductService();
-            int result = await service.AddAsync(productDto);
+            int result = await ProductService.AddAsync(productDto);
 
             switch (result)
             {
@@ -74,15 +76,14 @@ namespace ExampleProject.WebApi.Controllers
                 case -1:
                     return BadRequest("Exception thrown in repository");
                 default:
-                    return Ok("Product deleted");
+                    return Ok("Product added");
             }
         }
 
         [HttpPut("update")]
         public async Task<IActionResult> Put(int id, ProductCategoryDTO updated)
         {
-            ProductService service = new ProductService();
-            int result = await service.UpdateAsync(id, updated);
+            int result = await ProductService.UpdateAsync(id, updated);
 
             switch (result)
             {
@@ -91,7 +92,7 @@ namespace ExampleProject.WebApi.Controllers
                 case -1:
                     return BadRequest("Exception thrown in repository");
                 default:
-                    return Ok("Product deleted");
+                    return Ok("Product updated");
             }
         }
     }

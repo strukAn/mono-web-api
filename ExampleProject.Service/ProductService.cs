@@ -1,38 +1,38 @@
 ﻿using ExampleProject.Common;
 using ExampleProject.Model;
-using ExampleProject.Repository;
+using ExampleProject.Repository.Common;
 using ExampleProject.WebApi;
+using ExampleProjest.Service.Common;
 
 namespace ExampleProject.Service
 {
-    public class ProductService
+    public class ProductService : IProductService
     {
+        protected IProductRepository ProductRepository { get; }
+        public ProductService(IProductRepository repository) {
+            this.ProductRepository = repository;
+        }
         public async Task<List<Product>> GetAllAsync(ProductFilter filter )
         {
-            ProductRepository repository = new ProductRepository();
-            return await repository.GetAllAsync(filter);
+            return await ProductRepository.GetAllAsync(filter);
         }
         public async Task<Product> GetAsync(int id)
         {
-            ProductRepository repository = new ProductRepository();
-            return await repository.GetAsync(id);
+            return await ProductRepository.GetAsync(id);
         }
         public async Task<int> AddAsync(ProductCategoryDTO dto)
         {
-            ProductRepository repository = new ProductRepository();
             Product product = dto.ToProduct();
-            return await repository.AddAsync(product);
+            return await ProductRepository.AddAsync(product);
         }
          public async Task<int> DeleteAsync(int id)
         {
-            ProductRepository repository = new ProductRepository();
-            return await repository.DeleteAsync(id);
+            return await ProductRepository.DeleteAsync(id);
         }
          public async Task<int> UpdateAsync(int id, ProductCategoryDTO dto)
         {
-            ProductRepository repository = new ProductRepository();
             Product product = dto.ToProduct();
-            return await repository.UpdateAsync(id, product);
+            return await ProductRepository.UpdateAsync(id, product);
         }
     }
 }

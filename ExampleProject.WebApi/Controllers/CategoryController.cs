@@ -1,6 +1,6 @@
 ﻿using ExampleProject.Common;
 using ExampleProject.Model;
-using ExampleProject.Service;
+using ExampleProject.Service.Common;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ExampleProject.WebApi.Controllers
@@ -9,15 +9,20 @@ namespace ExampleProject.WebApi.Controllers
     [Route("[controller]")]
     public class CategoriesController : ControllerBase
     {
+        protected ICategoryService CategoryService { get; }
+        public CategoriesController(ICategoryService categoryService)
+        {
+            CategoryService = categoryService;
+        }
+
         [HttpGet("all")]
         public async Task<IActionResult> GetAllAsync([FromQuery] string name = "")
         {
-            CategoryService service = new CategoryService();
             CategoryFilter filter = new CategoryFilter();
 
             filter.Name = name;
 
-            List<Category> categories = await service.GetAllAsync(filter);
+            List<Category> categories = await CategoryService.GetAllAsync(filter);
 
             if (categories == null)
             {
@@ -30,8 +35,7 @@ namespace ExampleProject.WebApi.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetAsync(int id)
         {
-            CategoryService service = new CategoryService();
-            Category product = await service.GetAsync(id);
+            Category product = await CategoryService.GetAsync(id);
 
             if (product == null)
             {
@@ -44,8 +48,7 @@ namespace ExampleProject.WebApi.Controllers
         [HttpDelete("delete")]
         public async Task<IActionResult> DeleteAsync(int id)
         {
-            CategoryService service = new CategoryService();
-            int result = await service.DeleteAsync(id);
+            int result = await CategoryService.DeleteAsync(id);
 
             switch (result)
             {
@@ -61,8 +64,7 @@ namespace ExampleProject.WebApi.Controllers
         [HttpPost("add")]
         public async Task<IActionResult> PostAsync(Category category)
         {
-            CategoryService service = new CategoryService();
-            int result = await service.AddAsync(category);
+            int result = await CategoryService.AddAsync(category);
 
             switch (result)
             {
@@ -78,8 +80,7 @@ namespace ExampleProject.WebApi.Controllers
         [HttpPut("update")]
         public async Task<IActionResult> PutAsync(int id, Category updated)
         {
-            CategoryService service = new CategoryService();
-            int result = await service.UpdateAsync(id, updated);
+            int result = await CategoryService.UpdateAsync(id, updated);
 
             switch (result)
             {

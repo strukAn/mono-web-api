@@ -13,11 +13,6 @@ namespace ExampleProject.WebApi
 
         public Product ToProduct()
         {
-            if (this.CategoryId == 0 || this.CategoryName == null || this.ProductId == 0 || this.Name == null || this.Stock == 0)
-            {
-                return null;
-            }
-
             Category category = new Category(this.CategoryId, this.CategoryName);
 
             Product product = new Product(this.ProductId, this.Name, this.Description, this.Stock, category);
