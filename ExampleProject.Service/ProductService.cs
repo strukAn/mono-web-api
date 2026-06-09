@@ -1,7 +1,6 @@
 ﻿using ExampleProject.Common;
 using ExampleProject.Model;
 using ExampleProject.Repository.Common;
-using ExampleProject.WebApi;
 using ExampleProjest.Service.Common;
 
 namespace ExampleProject.Service
@@ -20,18 +19,16 @@ namespace ExampleProject.Service
         {
             return await ProductRepository.GetAsync(id);
         }
-        public async Task<int> AddAsync(ProductCategoryDTO dto)
+        public async Task<int> AddAsync(Product product)
         {
-            Product product = dto.ToProduct();
             return await ProductRepository.AddAsync(product);
         }
          public async Task<int> DeleteAsync(int id)
         {
             return await ProductRepository.DeleteAsync(id);
         }
-         public async Task<int> UpdateAsync(int id, ProductCategoryDTO dto)
+         public async Task<int> UpdateAsync(int id, Product product)
         {
-            Product product = dto.ToProduct();
             return await ProductRepository.UpdateAsync(id, product);
         }
     }

@@ -1,4 +1,5 @@
-﻿using ExampleProject.Common;
+﻿using AutoMapper;
+using ExampleProject.Common;
 using ExampleProject.Model;
 using ExampleProjest.Service.Common;
 using Microsoft.AspNetCore.Mvc;
@@ -10,10 +11,12 @@ namespace ExampleProject.WebApi.Controllers
     public class ProductsController : ControllerBase
     {
         protected IProductService ProductService { get; }
+        protected IMapper Mapper { get; }
 
-        public ProductsController(IProductService productService)
+        public ProductsController(IProductService productService, IMapper mapper)
         {
             this.ProductService = productService;
+            this.Mapper = mapper;
         }
 
         [HttpGet("all")]
@@ -67,7 +70,8 @@ namespace ExampleProject.WebApi.Controllers
         [HttpPost("add")]
         public async Task<IActionResult> Post(ProductCategoryDTO productDto)
         {
-            int result = await ProductService.AddAsync(productDto);
+            Product product = Mapper.Map<Product>(productDto);
+            int result = await ProductService.AddAsync(product);
 
             switch (result)
             {
@@ -83,7 +87,8 @@ namespace ExampleProject.WebApi.Controllers
         [HttpPut("update")]
         public async Task<IActionResult> Put(int id, ProductCategoryDTO updated)
         {
-            int result = await ProductService.UpdateAsync(id, updated);
+            Product product = Mapper.Map<Product>(updated);
+            int result = await ProductService.UpdateAsync(id, product);
 
             switch (result)
             {

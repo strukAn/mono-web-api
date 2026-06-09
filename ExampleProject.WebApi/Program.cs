@@ -6,6 +6,7 @@ using ExampleProject.Repository;
 using ExampleProject.Repository.Common;
 using ExampleProject.Service;
 using ExampleProject.Service.Common;
+using ExampleProject.WebApi;
 using ExampleProjest.Service.Common;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,11 +17,13 @@ builder.Services.AddControllers();
 //// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 
 
 //builder.Services.AddScoped<IProductRepository, ProductRepository>();
 //builder.Services.AddScoped<IProductService, ProductService>();
 //builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+//builder.Services.AddScoped<ICategoryService, CategoryService>();
 
 builder.Host
     .UseServiceProviderFactory(new AutofacServiceProviderFactory())
@@ -31,9 +34,9 @@ builder.Host
         //containerBuilder.RegisterType<CategoryService>().As<ICategoryService>().InstancePerLifetimeScope();
         //containerBuilder.RegisterType<CategoryRepository>().As<ICategoryRepository>().InstancePerLifetimeScope();
 
-        containerBuilder.RegisterAssemblyTypes(Assembly.Load("ExampleProject.Service"))
+        containerBuilder.RegisterAssemblyTypes(Assembly.Load($"ExampleProject.{ nameof(ExampleProject.Service) }"))
         .As(type => type.GetInterfaces().FirstOrDefault(iface => iface.Name == "I" + type.Name)).InstancePerLifetimeScope();
-        containerBuilder.RegisterAssemblyTypes(Assembly.Load("ExampleProject.Repository"))
+        containerBuilder.RegisterAssemblyTypes(Assembly.Load($"ExampleProject.{nameof(ExampleProject.Repository)}"))
         .As(type => type.GetInterfaces().FirstOrDefault(iface => iface.Name == "I" + type.Name)).InstancePerLifetimeScope();
     });
 
