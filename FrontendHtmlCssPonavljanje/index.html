@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+    <div>
+        <input type="button" value="Add" id="add">
+        <h1>Employees</h1>
+        <table id="EmployeeTable">
+            <tr>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Store Name</th>
+                <th>Started On</th>
+                <th>Actions</th>
+            </tr>
+            <tr>
+                <td>A</td>
+                <td>A</td>
+                <td>Instar, Osijek</td>
+                <td>12.1.2024.</td>
+                <td><input type="button" value="Edit" name="edit"> <input type="button" value="Delete" name="delete"></td>
+            </tr>
+        </table>
+    </div>
+    <hr>
+    <div>
+        <form class="hidden" id="form">
+            <label for="firstname">First Name:</label><br>
+            <input type="text" id="firstname" name="firstname"><br><br>
+
+            <label for="lastname">Last Name:</label><br>
+            <input type="text" id="lastname" name="lastname"><br><br>
+
+            <label for="store">Store:</label><br>
+            <input type="text" id="store" name="store"><br><br>
+
+            <label for="started">Started On:</label><br>
+            <input type="date" id="started" name="started"><br><br>
+
+            <span>
+                <input type="button" value="Submit" id="submit">
+                <input type="button" value="Cancel" id="cancel">
+            </span>
+        </form>
+    </div>
+    
+</body>
+<script src="script.js"></script>
+</html>
